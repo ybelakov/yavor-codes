@@ -1,0 +1,14 @@
+{
+  "sudo": "yavor is not in the sudoers file. This incident will be posted on LinkedIn.",
+  "cd": "nice try. this terminal only moves forward. try 'history' for the way back.",
+  "cat": "cat: everything worth reading is a command here.",
+  "vim": "vim: you'd never leave. we use Cursor + Claude Code here.",
+  "emacs": "emacs: I'd never leave. we use Cursor + Claude Code here.",
+  "coffee": "☕ brewing… done. productivity +12%, jitters +40%. this round's on the terminal.",
+  "exit": "exit: refusing. you just got here. (fine — closing the tab works, but 'contact' is friendlier.)",
+  "notfound": [
+    "run 'help' to see what this thing can actually do.",
+    "it's a portfolio, not a POSIX cert.",
+    "the AI agent that understands free text ships in v2. for now: 'help'."
+  ]
+}

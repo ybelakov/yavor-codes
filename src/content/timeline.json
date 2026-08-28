@@ -1,0 +1,16 @@
+{
+  "entries": [
+    { "date": "1999-09", "verb": "init", "text": "hello, world", "type": "life" },
+    { "date": "", "verb": "compete", "text": "professional table tennis — retired, still lethal", "type": "life" },
+    { "date": "", "verb": "study", "text": "Sofia University — enrolled, then left to build", "type": "life" },
+    { "date": "2023-04", "verb": "found", "text": "Team-GPT — AI collaboration for teams", "type": "product" },
+    { "date": "2023-12", "verb": "found", "text": "AIE.F Europe — first meetup, almost nobody came", "type": "community" },
+    { "date": "2024-11", "verb": "milestone", "text": "Team-GPT raises $4.5M — TechCrunch homepage", "type": "milestone" },
+    { "date": "2025-01", "verb": "milestone", "text": "AIE.F hits 1000+ members — biggest AI community in Europe", "type": "community" },
+    { "date": "2025-05", "verb": "ship", "text": "bezgradski.com — 7,000 users in 24h, then open-sourced", "type": "product" },
+    { "date": "2025-10", "verb": "win", "text": "$1K at a San Francisco hackathon (and the table-tennis side tournament)", "type": "life" },
+    { "date": "2025-11", "verb": "milestone", "text": "Team-GPT crosses $1M ARR", "type": "milestone" },
+    { "date": "2025-11", "verb": "launch", "text": "Juma — AI workspace for marketers, launched at True Ventures HQ", "type": "product" },
+    { "date": "2026-02", "verb": "milestone", "text": "AIE.F After Hours #50", "type": "community" }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "AIE.F Europe",
+  "fullName": "AI Engineer Foundation Europe",
+  "tagline": "an AI meetup that refused to stop.",
+  "story": "Started December 2023 with my Team-GPT colleagues. Early events barely had people. We stayed consistent — now it's the biggest AI community in Europe. Free AI events with one goal: boost Europe's ecosystem and catch up with Silicon Valley.",
+  "stats": [
+    { "label": "events run", "value": 50, "suffix": "+", "animated": true },
+    { "label": "members", "value": 1000, "suffix": "+", "animated": true },
+    { "label": "biggest event", "value": 300, "suffix": "+ people", "animated": true },
+    { "label": "planned for 2026", "value": 49, "suffix": " events", "animated": true }
+  ],
+  "photos": [
+    { "src": "/aief/aief-1.jpg", "alt": "Straight out of Silicon Valley — AIE.F Community Talks #5", "caption": "Straight out of Silicon Valley" },
+    { "src": "/aief/aief-2.jpg", "alt": "Yavor on stage with a mic at an AIE.F event", "caption": "hosting" },
+    { "src": "/aief/aief-3.jpg", "alt": "AIE.F crowd watching a talk", "caption": "full house" },
+    { "src": "/aief/aief-4.jpg", "alt": "Nvidia GTC recap talk at Community Talks", "caption": "Community Talks" },
+    { "src": "/aief/aief-5.jpg", "alt": "Pizza and networking at an AIE.F event", "caption": "networking (and pizza)" },
+    { "src": "/aief/aief-6.jpg", "alt": "Crowd networking at Campus X", "caption": "Campus X" }
+  ],
+  "milestones": [
+    { "date": "2023-12", "text": "first event — barely anyone showed up" },
+    { "date": "2024-10", "text": "AIE.F Hackathon — 184 people, 33 projects" },
+    { "date": "2025-01", "text": "1000+ members — biggest AI community in Europe" },
+    { "date": "2026-01", "text": "biggest event ever: 300+ people" },
+    { "date": "2026-02", "text": "After Hours #50 ★" }
+  ],
+  "venues": "Work&Share · Barter Community Hub · Campus X · SAP Labs",
+  "speakerCta": "want to speak at one? → contact"
+}

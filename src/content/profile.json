@@ -1,0 +1,35 @@
+{
+  "name": "Yavor Belakov",
+  "headline": "Head of AI @ Juma · Founder @ AIE.F Europe",
+  "bio": [
+    "26. Uni dropout, startup founder, community builder.",
+    "Co-founded Team-GPT in 2023 — now Juma, Cursor for marketing agencies.",
+    "Ran an AI community past its 50th meetup. Ships fast, posts about it."
+  ],
+  "avatar": "/images/avatar.jpg",
+  "location": { "primary": "Sofia, Bulgaria", "secondary": "San Francisco (sometimes)" },
+  "socials": [
+    { "id": "linkedin", "label": "linkedin", "display": "/in/yavor-belakov", "url": "https://linkedin.com/in/yavor-belakov", "primary": true },
+    { "id": "github", "label": "github", "display": "github.com/ybelakov", "url": "https://github.com/ybelakov", "primary": true },
+    { "id": "email", "label": "email", "display": "yavor@juma.ai", "url": "mailto:yavor@juma.ai", "primary": true }
+  ],
+  "contact": {
+    "email": "yavor@juma.ai",
+    "note": "Speaking at an AIE.F event, trying Juma, or just in Sofia? Any of the above works.",
+    "fastest": "LinkedIn is the fastest reply — I live there."
+  },
+  "neofetch": {
+    "host": "yavor@yavor.codes",
+    "specs": [
+      { "key": "role", "value": "Head of AI @ Juma" },
+      { "key": "community", "value": "AIE.F Europe — 50+ events, 1000+ members" },
+      { "key": "location", "value": "Sofia, BG ⇄ San Francisco" },
+      { "key": "education", "value": "Sofia University (dropout)" },
+      { "key": "sport", "value": "table tennis — pro, retired, still lethal" },
+      { "key": "hardware", "value": "MacBook Pro M4 Max" },
+      { "key": "tools", "value": "Cursor · Claude Code · t3 stack" },
+      { "key": "shipping", "value": "since April 2023" }
+    ],
+    "birthYearMonth": "1999-09"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Juma",
+  "org": "jumalabs",
+  "tagline": "AI workspace built especially for marketers. By marketers.",
+  "description": "Your brand voice, tone guides and ICPs already loaded. AI that knows how to do proper SEO. From competitor analysis to campaign launch — every step connected, with your team in the loop.",
+  "story": "Born as Team-GPT in April 2023. OpenAI's lawyers sent two letters about the name — so in November 2025 we launched Juma at True Ventures' HQ in San Francisco.",
+  "role": "Head of AI",
+  "metrics": [
+    { "label": "users", "value": 75000, "suffix": "+" },
+    { "label": "companies", "value": 500, "suffix": "+" },
+    { "label": "ARR", "value": 1000000, "prefix": "$", "note": "Nov 2025" },
+    { "label": "raised", "value": 4500000, "prefix": "$", "note": "True Ventures" }
+  ],
+  "links": [
+    { "label": "juma.ai", "url": "https://juma.ai" },
+    { "label": "jumalabs.ai", "url": "https://jumalabs.ai" }
+  ],
+  "pullQuote": {
+    "text": "Announcing Juma — AI workspace built especially for marketers. By marketers!",
+    "source": "the launch post, Nov 19, 2025",
+    "url": "https://www.linkedin.com/posts/yavor-belakov_announcing-juma-ai-workspace-built-especially-activity-7396918987088928768-HJbd"
+  }
+}
