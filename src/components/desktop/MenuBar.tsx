@@ -44,14 +44,12 @@ function useClock(): string {
   );
   if (!tick) return "";
   const now = new Date(tick);
-  return (
-    now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) +
-    "  " +
-    now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
-  );
+  const day = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return `${day.replace(",", "")} ${time}`;
 }
 
-const MENUS = ["File", "Edit", "View", "Window", "Help"];
+const MENUS = ["File", "Edit", "View", "Go", "Window", "Help"];
 
 export function MenuBar() {
   const activeAppId = useDesktop((s) => s.activeAppId);
@@ -113,7 +111,15 @@ export function MenuBar() {
         )}
         {menuOpen && menuOpen !== "apple" && (
           <div className="menu-dropdown">
-            {menuOpen === "Window" && activeWindow ? (
+            {menuOpen === "Go" ? (
+              <>
+                {(["Desktop", "Documents", "Downloads", "Projects", "Applications"] as const).map((f) => (
+                  <button key={f} type="button" onClick={() => { openApp("finder", { folder: f }); setMenuOpen(null); }}>
+                    {f}
+                  </button>
+                ))}
+              </>
+            ) : menuOpen === "Window" && activeWindow ? (
               <button type="button" onClick={() => { closeWin(activeWindow.id); setMenuOpen(null); }}>
                 Close Window
               </button>
@@ -139,6 +145,16 @@ export function MenuBar() {
         <svg viewBox="0 0 16 12" className="menubar-glyph" aria-label="Wi-Fi">
           <path d="M8 10.6l1.9-2.3a2.9 2.9 0 0 0-3.8 0z" fill="currentColor" />
           <path d="M3.6 5.6a6.6 6.6 0 0 1 8.8 0M1.2 3a10 10 0 0 1 13.6 0" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        </svg>
+        <svg viewBox="0 0 14 14" className="menubar-glyph" aria-label="Search">
+          <circle cx="6.2" cy="6.2" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M9.6 9.6L13 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <svg viewBox="0 0 16 12" className="menubar-glyph" aria-label="Control Center">
+          <rect x="0.7" y="0.7" width="14.6" height="4.2" rx="2.1" fill="none" stroke="currentColor" strokeWidth="1.3" />
+          <circle cx="11" cy="2.8" r="1.15" fill="currentColor" />
+          <rect x="0.7" y="7.1" width="14.6" height="4.2" rx="2.1" fill="none" stroke="currentColor" strokeWidth="1.3" />
+          <circle cx="5" cy="9.2" r="1.15" fill="currentColor" />
         </svg>
         <span className="menubar-clock">{clock}</span>
       </div>

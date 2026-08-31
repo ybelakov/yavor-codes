@@ -8,6 +8,8 @@ import { Dock } from "./Dock";
 import { DesktopIcons } from "./DesktopIcons";
 import { Window } from "./Window";
 import { BootScreen } from "./BootScreen";
+import { WallpaperArt } from "./WallpaperArt";
+import { Widgets } from "./Widgets";
 import { TerminalApp } from "@/components/apps/TerminalApp";
 import { ChromeApp } from "@/components/apps/ChromeApp";
 import { FinderApp } from "@/components/apps/FinderApp";
@@ -22,7 +24,7 @@ function AppSurface({ win }: { win: WindowState }) {
   switch (win.appId) {
     case "terminal": return <TerminalApp />;
     case "chrome": return <ChromeApp site={win.payload?.site} />;
-    case "finder": return <FinderApp />;
+    case "finder": return <FinderApp folder={win.payload?.folder} />;
     case "notes": return <NotesApp note={win.payload?.note} />;
     case "photos": return <PhotosApp />;
     case "mail": return <MailApp />;
@@ -45,8 +47,10 @@ export function Desktop() {
 
   return (
     <div className="desktop">
+      <WallpaperArt />
       {!bootDone && <BootScreen onDone={handleBootDone} />}
       <MenuBar />
+      <Widgets />
       <DesktopIcons />
       {windows.map((win) => (
         <Window key={win.id} win={win}>

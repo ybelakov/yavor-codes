@@ -145,6 +145,57 @@ export function FileIcon() {
   );
 }
 
+export function TrashIcon({ full }: { full?: boolean }) {
+  return (
+    <svg viewBox="0 0 96 96" className="app-icon-svg">
+      <path d="M30 26h36v54a8 8 0 0 1-8 8H38a8 8 0 0 1-8-8z" fill="#c9d2dc" fillOpacity="0.55" stroke="#eef3f8" strokeWidth="2.5" />
+      <path d="M40 36v42M48 36v42M56 36v42" stroke="#eef3f8" strokeWidth="2.5" strokeLinecap="round" />
+      <rect x="24" y="18" width="48" height="7" rx="3.5" fill="#eef3f8" />
+      <path d="M40 18v-4a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v4" fill="none" stroke="#eef3f8" strokeWidth="2.5" />
+      {full && <path d="M34 30h28l-3 12H37z" fill="#9fb4c7" fillOpacity="0.7" />}
+    </svg>
+  );
+}
+
+export function DocIcon({ tint, label }: { tint: string; label: string }) {
+  return (
+    <svg viewBox="0 0 96 96" className="app-icon-svg">
+      <path d="M22 8h36l18 18v62a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="#fdfdfd" stroke="#dfe3e8" strokeWidth="1.5" />
+      <path d="M58 8l18 18H62a4 4 0 0 1-4-4z" fill="#d6dae0" />
+      <rect x="18" y="56" width="58" height="22" rx="4" fill={tint} />
+      <text x="47" y="72" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="700" fontFamily="-apple-system, sans-serif">
+        {label}
+      </text>
+    </svg>
+  );
+}
+
+export function ImageFileIcon() {
+  return (
+    <svg viewBox="0 0 96 96" className="app-icon-svg">
+      <path d="M22 8h36l18 18v62a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="#fdfdfd" stroke="#dfe3e8" strokeWidth="1.5" />
+      <path d="M58 8l18 18H62a4 4 0 0 1-4-4z" fill="#d6dae0" />
+      <rect x="27" y="40" width="42" height="30" rx="3" fill="#cfe8ff" />
+      <circle cx="38" cy="50" r="4" fill="#ffd44d" />
+      <path d="M27 66l12-12 9 9 7-6 14 13z" fill="#5aa9e6" />
+    </svg>
+  );
+}
+
+export function ArchiveIcon() {
+  return (
+    <svg viewBox="0 0 96 96" className="app-icon-svg">
+      <path d="M22 8h36l18 18v62a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="#fdfdfd" stroke="#dfe3e8" strokeWidth="1.5" />
+      <path d="M58 8l18 18H62a4 4 0 0 1-4-4z" fill="#d6dae0" />
+      <rect x="43" y="14" width="10" height="6" fill="#c8ced6" />
+      <rect x="43" y="24" width="10" height="6" fill="#c8ced6" />
+      <rect x="43" y="34" width="10" height="6" fill="#c8ced6" />
+      <rect x="40" y="46" width="16" height="18" rx="3" fill="#b9c1cb" />
+      <rect x="46" y="52" width="4" height="6" rx="2" fill="#fff" />
+    </svg>
+  );
+}
+
 export function AppIcon({ appId }: { appId: AppId }) {
   switch (appId) {
     case "terminal": return <TerminalIcon />;

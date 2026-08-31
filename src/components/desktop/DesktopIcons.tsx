@@ -2,55 +2,37 @@
 
 import { useState } from "react";
 import { useDesktop } from "@/lib/desktop/store";
-import { FileIcon, FolderIcon, AppIcon } from "./AppIcons";
-import type { AppId } from "@/lib/desktop/types";
+import { NodeIcon } from "./NodeIcon";
+import { DESKTOP_ITEMS, type FsNode } from "@/lib/desktop/filesystem";
 import { trackEvent } from "@/lib/analytics";
-
-interface DeskItem {
-  id: string;
-  name: string;
-  kind: "app" | "folder" | "file";
-  appId?: AppId;
-  open: { app: AppId; payload?: Record<string, string> };
-}
-
-const ITEMS: DeskItem[] = [
-  { id: "terminal", name: "Terminal", kind: "app", appId: "terminal", open: { app: "terminal" } },
-  { id: "projects", name: "Projects", kind: "folder", open: { app: "finder" } },
-  { id: "photos", name: "AIE.F events", kind: "folder", open: { app: "photos" } },
-  { id: "readme", name: "read-me-first.txt", kind: "file", open: { app: "notes", payload: { note: "about" } } },
-];
 
 export function DesktopIcons() {
   const openApp = useDesktop((s) => s.openApp);
   const [selected, setSelected] = useState<string | null>(null);
 
+  const activate = (node: FsNode) => {
+    if (node.goto) {
+      trackEvent("app_open", { app: "finder", source: "desktop" });
+      openApp("finder", { folder: node.goto });
+    } else if (node.open) {
+      trackEvent("app_open", { app: node.open.app, source: "desktop" });
+      openApp(node.open.app, node.open.payload);
+    }
+  };
+
   return (
     <div className="desktop-icons">
-      {ITEMS.map((item) => (
+      {DESKTOP_ITEMS.map((node) => (
         <button
-          key={item.id}
+          key={node.name}
           type="button"
-          className={`desk-icon ${selected === item.id ? "desk-icon-selected" : ""}`}
-          onClick={() => setSelected(item.id)}
-          onDoubleClick={() => {
-            trackEvent("app_open", { app: item.open.app, source: "desktop" });
-            openApp(item.open.app, item.open.payload);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") openApp(item.open.app, item.open.payload);
-          }}
+          className={`desk-icon ${selected === node.name ? "desk-icon-selected" : ""}`}
+          onClick={() => setSelected(node.name)}
+          onDoubleClick={() => activate(node)}
+          onKeyDown={(e) => e.key === "Enter" && activate(node)}
         >
-          <span className="desk-icon-img">
-            {item.kind === "app" && item.appId ? (
-              <AppIcon appId={item.appId} />
-            ) : item.kind === "folder" ? (
-              <FolderIcon />
-            ) : (
-              <FileIcon />
-            )}
-          </span>
-          <span className="desk-icon-label">{item.name}</span>
+          <span className="desk-icon-img"><NodeIcon node={node} /></span>
+          <span className="desk-icon-label">{node.name}</span>
         </button>
       ))}
     </div>

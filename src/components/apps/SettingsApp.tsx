@@ -14,7 +14,7 @@ export function SettingsApp() {
   const setWallpaper = useWallpaper((s) => s.setWallpaper);
   const picked = useWallpaper((s) => s.wallpaper);
   const [initial] = useState(() => readStoredWallpaper());
-  const wallpaper = picked === "sonoma" ? initial : picked;
+  const wallpaper = picked === "sequoia" ? initial : picked;
 
   return (
     <div className="settings">

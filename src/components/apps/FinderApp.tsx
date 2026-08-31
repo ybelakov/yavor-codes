@@ -2,100 +2,151 @@
 
 import { useState } from "react";
 import { useDesktop } from "@/lib/desktop/store";
-import { FileIcon, FolderIcon, AppIcon } from "@/components/desktop/AppIcons";
-import type { AppId } from "@/lib/desktop/types";
+import { NodeIcon } from "@/components/desktop/NodeIcon";
+import { FS, KIND_LABEL, SIDEBAR_SECTIONS, type FsNode } from "@/lib/desktop/filesystem";
 
-interface Item {
-  name: string;
-  kind: "folder" | "file" | "app";
-  opens?: { app: AppId; payload?: Record<string, string> };
-  appId?: AppId;
-  meta: string;
-}
+type View = "icon" | "list";
 
-const TREE: Record<string, Item[]> = {
-  Desktop: [
-    { name: "Terminal.app", kind: "app", appId: "terminal", opens: { app: "terminal" }, meta: "Application" },
-    { name: "Projects", kind: "folder", opens: undefined, meta: "Folder" },
-    { name: "read-me-first.txt", kind: "file", opens: { app: "notes", payload: { note: "about" } }, meta: "Plain Text" },
-  ],
-  Documents: [
-    { name: "about-me.txt", kind: "file", opens: { app: "notes", payload: { note: "about" } }, meta: "Plain Text" },
-    { name: "san-francisco.md", kind: "file", opens: { app: "notes", payload: { note: "sf" } }, meta: "Markdown" },
-    { name: "now.md", kind: "file", opens: { app: "notes", payload: { note: "now" } }, meta: "Markdown" },
-    { name: "resume.pdf", kind: "file", opens: { app: "notes", payload: { note: "about" } }, meta: "PDF Document" },
-  ],
-  Projects: [
-    { name: "juma", kind: "folder", opens: { app: "chrome", payload: { site: "juma" } }, meta: "Folder" },
-    { name: "aief-europe", kind: "folder", opens: { app: "chrome", payload: { site: "aief" } }, meta: "Folder" },
-    { name: "bezgradski", kind: "folder", opens: { app: "chrome", payload: { site: "github" } }, meta: "Folder" },
-    { name: "yavor-codes", kind: "folder", opens: { app: "chrome", payload: { site: "github" } }, meta: "Folder" },
-  ],
-  Photos: [
-    { name: "aief-events", kind: "folder", opens: { app: "photos" }, meta: "6 items" },
-  ],
-  Applications: [
-    { name: "Terminal", kind: "app", appId: "terminal", opens: { app: "terminal" }, meta: "Application" },
-    { name: "Google Chrome", kind: "app", appId: "chrome", opens: { app: "chrome" }, meta: "Application" },
-    { name: "Notes", kind: "app", appId: "notes", opens: { app: "notes" }, meta: "Application" },
-    { name: "Photos", kind: "app", appId: "photos", opens: { app: "photos" }, meta: "Application" },
-    { name: "Mail", kind: "app", appId: "mail", opens: { app: "mail" }, meta: "Application" },
-    { name: "System Settings", kind: "app", appId: "settings", opens: { app: "settings" }, meta: "Application" },
-  ],
-};
-
-const SIDEBAR = ["Desktop", "Documents", "Projects", "Photos", "Applications"];
-
-export function FinderApp() {
-  const [folder, setFolder] = useState("Desktop");
+export function FinderApp({ folder: initialFolder }: { folder?: string }) {
+  const [folder, setFolder] = useState(initialFolder && FS[initialFolder] ? initialFolder : "Desktop");
+  const [history, setHistory] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [view, setView] = useState<View>("list");
+  const [query, setQuery] = useState("");
   const openApp = useDesktop((s) => s.openApp);
-  const items = TREE[folder] ?? [];
 
-  const activate = (item: Item) => {
-    if (item.opens) openApp(item.opens.app, item.opens.payload);
-    else if (TREE[item.name]) setFolder(item.name);
+  const all = FS[folder] ?? [];
+  const items = query
+    ? all.filter((n) => n.name.toLowerCase().includes(query.toLowerCase()))
+    : all;
+
+  const navigate = (next: string) => {
+    setHistory((h) => [...h, folder]);
+    setFolder(next);
+    setSelected(null);
+    setQuery("");
+  };
+
+  const back = () => {
+    setHistory((h) => {
+      const prev = h[h.length - 1];
+      if (prev) {
+        setFolder(prev);
+        setSelected(null);
+      }
+      return h.slice(0, -1);
+    });
+  };
+
+  const activate = (node: FsNode) => {
+    if (node.goto && FS[node.goto]) navigate(node.goto);
+    else if (node.open) openApp(node.open.app, node.open.payload);
+    else if (FS[node.name]) navigate(node.name);
   };
 
   return (
     <div className="finder">
       <aside className="finder-sidebar">
-        <p className="finder-side-label">Favorites</p>
-        {SIDEBAR.map((f) => (
-          <button
-            key={f}
-            type="button"
-            className={`finder-side-item ${folder === f ? "finder-side-active" : ""}`}
-            onClick={() => { setFolder(f); setSelected(null); }}
-          >
-            <span className="finder-side-glyph" aria-hidden="true">
-              {f === "Applications" ? "◇" : f === "Photos" ? "◈" : "▤"}
-            </span>
-            {f}
-          </button>
+        {SIDEBAR_SECTIONS.map((section) => (
+          <div key={section.label}>
+            <p className="finder-side-label">{section.label}</p>
+            {section.items.map((f) => (
+              <button
+                key={f}
+                type="button"
+                className={`finder-side-item ${folder === f ? "finder-side-active" : ""}`}
+                onClick={() => { setFolder(f); setSelected(null); setQuery(""); }}
+              >
+                <span className="finder-side-glyph" aria-hidden="true">
+                  {f === "Applications" ? "◇" : f === "Photos" ? "◈" : f === "Downloads" ? "⤓" : "▤"}
+                </span>
+                {f}
+              </button>
+            ))}
+          </div>
         ))}
       </aside>
+
       <div className="finder-main">
-        <div className="finder-path">{folder}</div>
-        <div className="finder-grid">
-          {items.map((item) => (
+        <div className="finder-toolbar">
+          <span className="finder-nav">
+            <button type="button" onClick={back} disabled={history.length === 0} aria-label="Back">‹</button>
+            <button type="button" disabled aria-label="Forward">›</button>
+          </span>
+          <strong className="finder-title">{folder}</strong>
+          <span className="finder-viewtoggle">
             <button
-              key={item.name}
               type="button"
-              className={`finder-item ${selected === item.name ? "finder-item-selected" : ""}`}
-              onClick={() => setSelected(item.name)}
-              onDoubleClick={() => activate(item)}
-              onKeyDown={(e) => e.key === "Enter" && activate(item)}
-            >
-              <span className="finder-item-icon">
-                {item.kind === "folder" ? <FolderIcon /> : item.kind === "app" && item.appId ? <AppIcon appId={item.appId} /> : <FileIcon />}
-              </span>
-              <span className="finder-item-name">{item.name}</span>
-            </button>
-          ))}
+              className={view === "icon" ? "vt-active" : ""}
+              onClick={() => setView("icon")}
+              aria-label="Icon view"
+            >▦</button>
+            <button
+              type="button"
+              className={view === "list" ? "vt-active" : ""}
+              onClick={() => setView("list")}
+              aria-label="List view"
+            >☰</button>
+          </span>
+          <input
+            className="finder-search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search"
+            aria-label="Search this folder"
+          />
         </div>
+
+        {view === "icon" ? (
+          <div className="finder-grid">
+            {items.map((node) => (
+              <button
+                key={node.name}
+                type="button"
+                className={`finder-item ${selected === node.name ? "finder-item-selected" : ""}`}
+                onClick={() => setSelected(node.name)}
+                onDoubleClick={() => activate(node)}
+                onKeyDown={(e) => e.key === "Enter" && activate(node)}
+              >
+                <span className="finder-item-icon"><NodeIcon node={node} /></span>
+                <span className="finder-item-name">{node.name}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="finder-list" role="table">
+            <div className="finder-list-head" role="row">
+              <span role="columnheader">Name</span>
+              <span role="columnheader">Date Modified</span>
+              <span role="columnheader">Size</span>
+              <span role="columnheader">Kind</span>
+            </div>
+            <div className="finder-list-body">
+              {items.map((node) => (
+                <div
+                  key={node.name}
+                  role="row"
+                  tabIndex={0}
+                  className={`finder-row ${selected === node.name ? "finder-row-selected" : ""}`}
+                  onClick={() => setSelected(node.name)}
+                  onDoubleClick={() => activate(node)}
+                  onKeyDown={(e) => e.key === "Enter" && activate(node)}
+                >
+                  <span className="finder-row-name">
+                    <span className="finder-row-icon"><NodeIcon node={node} /></span>
+                    {node.name}
+                  </span>
+                  <span>{node.modified}</span>
+                  <span>{node.size ?? "--"}</span>
+                  <span>{KIND_LABEL[node.kind]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="finder-status">
-          {items.length} items{selected ? ` · ${selected} selected` : ""} · double-click to open
+          {items.length} of {all.length} items{selected ? ` · ${selected}` : ""} · double-click to open
         </div>
       </div>
     </div>
