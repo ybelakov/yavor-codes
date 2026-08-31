@@ -1,16 +1,25 @@
 # yavor.codes
 
-**A terminal where stdout is React.** → [yavor.codes](https://yavor.codes)
+**Yavor Belakov's desktop, in a browser.** → [yavor.codes](https://yavor.codes)
 
-Personal site of Yavor Belakov — Head of AI @ [Juma](https://juma.ai), founder of AIE.F Europe. The site boots like a CLI; commands render rich, animated React blocks.
+A macOS-style desktop: menu bar, dock, draggable windows, and a set of working apps. The Terminal is the fastest way through everything — but you can also browse, read, and click your way around.
 
-## Commands
+## Apps
 
-`help` · `whoami` · `juma` · `aief` · `sf` · `posts` · `history` · `neofetch` · `contact` · `theme` · `clear` — plus a handful of easter eggs. Try things.
+| App | What's inside |
+|---|---|
+| **Terminal** | The real thing: `help`, `whoami`, `juma`, `aief`, `sf`, `posts`, `history`, `neofetch`, `contact`, `theme` — plus ~30 simulated shell commands (`git status`, `top`, `npm install`, `ping`, `sudo`…) and a pile of easter eggs |
+| **Google Chrome** | Tabs, omnibox and bookmarks over in-app renderings of juma.ai, AIE.F, LinkedIn and GitHub |
+| **Finder** | Desktop / Documents / Projects / Photos / Applications — double-click opens the right app |
+| **Notes** | read-me-first, san-francisco.md, now.md |
+| **Photos** | AIE.F event photos with a lightbox |
+| **Mail** | Composes a real message to yavor@juma.ai |
+| **System Settings** | Wallpapers and five Terminal themes, both persisted |
+| **About This Mac** | From the  menu |
 
 ## Stack
 
-Next.js (App Router) · TypeScript · Tailwind v4 · Framer Motion · zustand. Five complete switchable themes (`theme list`). No xterm.js — the terminal is custom.
+Next.js (App Router) · TypeScript · Tailwind v4 · Framer Motion · zustand. The window manager, terminal engine and command registry are all hand-rolled — no xterm.js, no window library.
 
 ## Run
 
@@ -27,4 +36,4 @@ Deploys happen **only** via Vercel git integration: open a PR, merge to `main`, 
 
 ## Docs
 
-Planning docs live in [`docs/`](docs/) — overview, definition of done, and seven subsystem plans.
+Planning docs for the original terminal concept live in [`docs/`](docs/); the desktop shell is documented in the code.

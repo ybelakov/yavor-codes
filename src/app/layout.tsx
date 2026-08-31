@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s — yavor.codes",
   },
   description:
-    "A terminal where stdout is React. Yavor Belakov — Head of AI at Juma, founder of AIE.F Europe. Sofia ⇄ San Francisco.",
+    "Yavor Belakov's desktop. Head of AI at Juma, founder of AIE.F Europe. Open the Terminal — everything is in there. Sofia ⇄ San Francisco.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "yavor.codes",
     title: "Yavor Belakov — yavor.codes",
     description:
-      "A terminal where stdout is React. Head of AI at Juma, founder of AIE.F Europe. Sofia ⇄ San Francisco.",
+      "Yavor Belakov's desktop. Head of AI at Juma, founder of AIE.F Europe. Sofia ⇄ San Francisco.",
   },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },

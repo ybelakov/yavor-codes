@@ -26,7 +26,7 @@ export const useTerminal = create<TerminalState>((set) => ({
   inputHistory: [],
   historyCursor: null,
   draft: "",
-  booting: true,
+  booting: false,
   resetKey: 0,
   appendEntry: (entry) =>
     set((s) => ({ entries: [...s.entries, entry].slice(-MAX_ENTRIES) })),

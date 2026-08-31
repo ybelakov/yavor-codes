@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "yavor.codes — a terminal where stdout is React";
+export const alt = "yavor.codes — Yavor Belakov's desktop";
 
 export default async function OgImage() {
   let fontData: Buffer | null = null;
@@ -40,7 +40,7 @@ export default async function OgImage() {
             <div style={{ width: 16, height: 16, borderRadius: 8, background: "#f87171" }} />
             <div style={{ width: 16, height: 16, borderRadius: 8, background: "#fbbf24" }} />
             <div style={{ width: 16, height: 16, borderRadius: 8, background: "#34d399" }} />
-            <div style={{ color: "#8b8ba3", fontSize: 22, marginLeft: 16 }}>yavor@codes: ~</div>
+            <div style={{ color: "#8b8ba3", fontSize: 22, marginLeft: 16 }}>Terminal — yavor@codes: ~</div>
           </div>
           <div style={{ display: "flex", color: "#a78bfa", fontSize: 34 }}>❯ whoami</div>
           <div style={{ display: "flex", color: "#e6e6f0", fontSize: 58, fontWeight: 700, marginTop: 24 }}>
