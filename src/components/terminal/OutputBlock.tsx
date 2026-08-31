@@ -13,7 +13,7 @@ import { HistoryBlock } from "@/components/blocks/HistoryBlock";
 import { NeofetchBlock } from "@/components/blocks/NeofetchBlock";
 import { ContactBlock } from "@/components/blocks/ContactBlock";
 import { ThemeListBlock, ThemeSetBlock } from "@/components/blocks/ThemeBlock";
-import { EggBlock, LsBlock, MatrixBlock, NotFoundBlock, TextBlock } from "@/components/blocks/SmallBlocks";
+import { EggBlock, LsBlock, MatrixBlock, NotFoundBlock, PreBlock, TextBlock } from "@/components/blocks/SmallBlocks";
 import { BootLineRow, BootLogo } from "@/components/blocks/BootBlocks";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -34,6 +34,7 @@ const BLOCKS: Record<string, ComponentType<any>> = {
   matrix: MatrixBlock,
   "not-found": NotFoundBlock,
   text: TextBlock,
+  pre: PreBlock,
   "boot-line": BootLineRow,
   "boot-logo": BootLogo,
 };

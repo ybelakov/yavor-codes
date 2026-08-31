@@ -566,11 +566,20 @@ a {
   overflow-x: hidden;
   text-shadow: none;
 }
-.ascii-logo-compact { display: none; font-size: 14px; line-height: 16px; }
+.wordmark-compact {
+  display: none;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--t-accent);
+  margin: 12px 0;
+}
+
+.wordmark-dot { color: var(--t-accent2); }
 
 @media (max-width: 760px) {
   .ascii-logo-wide { display: none; }
-  .ascii-logo-compact { display: block; }
+  .wordmark-compact { display: block; }
 }
 
 /* small blocks */
@@ -587,6 +596,13 @@ a {
 }
 .copy-btn { font-size: 13px; }
 .contact-list .social-label { min-width: 120px; }
+
+.pre-output {
+  white-space: pre-wrap;
+  font-family: inherit;
+  color: var(--t-text);
+  line-height: 1.5;
+}
 
 /* 404 */
 .notfound-page .output-log { padding-top: 40vh; }

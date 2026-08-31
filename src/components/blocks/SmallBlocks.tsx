@@ -10,6 +10,10 @@ export function TextBlock({ text, tone }: { text: string; tone?: string }) {
   return <p className={tone === "error" ? "text-error" : tone === "muted" ? "dim-text" : ""}>{text}</p>;
 }
 
+export function PreBlock({ text }: { text: string }) {
+  return <pre className="pre-output">{text}</pre>;
+}
+
 export function EggBlock({ text }: { text: string }) {
   useEffect(() => {
     trackEvent("easter_egg", { name: text.slice(0, 20) });

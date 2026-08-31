@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTerminal } from "@/lib/terminal/store";
-import { appendSystemEntry, runCommand } from "@/lib/terminal/run";
+import { appendSystemEntry } from "@/lib/terminal/run";
 import { BOOT_STORAGE_KEY, FULL_BOOT, SHORT_BOOT, type BootLine } from "@/lib/boot/bootScript";
 import { trackEvent } from "@/lib/analytics";
 import { OutputLog } from "./OutputLog";
@@ -56,7 +56,10 @@ export function Terminal() {
       }
       markBooted();
       trackEvent("boot", { outcome: skipped ? "skipped" : "completed" });
-      runCommand("whoami", "boot", skipped);
+      appendSystemEntry(
+        { type: "text", props: { text: "ready. type 'help', hit tab, or tap a chip below.", tone: "muted" } },
+        skipped,
+      );
       setBooting(false);
       // focus input on fine-pointer devices only
       if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {

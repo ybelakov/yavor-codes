@@ -1,5 +1,6 @@
 import eggs from "@/content/eggs.json";
 import { THEME_NAMES, isThemeName } from "@/lib/themes";
+import { DUMMY_COMMANDS } from "./dummy";
 import type { Command, CommandResult } from "./types";
 
 const egg = (text: string): CommandResult => ({ kind: "block", blockType: "egg", props: { text } });
@@ -7,7 +8,7 @@ const egg = (text: string): CommandResult => ({ kind: "block", blockType: "egg",
 export const COMMANDS: Command[] = [
   {
     name: "help",
-    aliases: ["?", "man"],
+    aliases: ["?", "commands"],
     description: "list every command",
     suggestedNext: ["whoami", "neofetch", "posts"],
     run: () => ({ kind: "block", blockType: "help" }),
@@ -42,7 +43,7 @@ export const COMMANDS: Command[] = [
   },
   {
     name: "posts",
-    aliases: ["linkedin", "top"],
+    aliases: ["linkedin", "greatest-hits"],
     description: "greatest hits from LinkedIn",
     suggestedNext: ["juma", "aief", "contact"],
     run: () => ({ kind: "block", blockType: "posts" }),
@@ -147,12 +148,15 @@ export const COMMANDS: Command[] = [
       return { kind: "none" };
     },
   },
+  ...DUMMY_COMMANDS,
 ];
 
 const lookup = new Map<string, Command>();
 for (const cmd of COMMANDS) {
-  lookup.set(cmd.name, cmd);
-  for (const a of cmd.aliases ?? []) lookup.set(a, cmd);
+  // first registration wins: real commands are listed before the shell sims,
+  // so a dummy can never shadow a content command.
+  if (!lookup.has(cmd.name)) lookup.set(cmd.name, cmd);
+  for (const a of cmd.aliases ?? []) if (!lookup.has(a)) lookup.set(a, cmd);
 }
 
 export function resolveCommand(token: string): Command | undefined {

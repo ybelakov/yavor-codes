@@ -16,11 +16,6 @@ export const ASCII_LOGO: string[] = [
   "   ╚═╝   ╚═╝  ╚═╝  ╚═══╝   ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝"
 ];
 
-export const ASCII_LOGO_COMPACT: string[] = [
-  "▄█ █▄ ▄▀▄ █ █ ▄▀▄ █▀▄",
-  " ▀█▀  █▀█ ▀▄▀ ▀▄▀ █▀▄ .codes",
-];
-
 export const FULL_BOOT: BootLine[] = [
   { id: "bios", text: "yavor.codes bios v1.0", delayBefore: 0 },
   { id: "mem", text: "memory check", status: "640K ok (should be enough for anybody)", tone: "ok", delayBefore: 200 },

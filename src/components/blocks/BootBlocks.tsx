@@ -1,6 +1,6 @@
 "use client";
 
-import { ASCII_LOGO, ASCII_LOGO_COMPACT } from "@/lib/boot/bootScript";
+import { ASCII_LOGO } from "@/lib/boot/bootScript";
 
 export function BootLineRow({
   text,
@@ -33,9 +33,9 @@ export function BootLogo() {
       <pre className="ascii-logo ascii-logo-wide" aria-hidden="true">
         {ASCII_LOGO.join("\n")}
       </pre>
-      <pre className="ascii-logo ascii-logo-compact" aria-hidden="true">
-        {ASCII_LOGO_COMPACT.join("\n")}
-      </pre>
+      <p className="wordmark-compact" aria-hidden="true">
+        yavor<span className="wordmark-dot">.</span>codes
+      </p>
     </div>
   );
 }
