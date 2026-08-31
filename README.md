@@ -17,6 +17,15 @@ A macOS-style desktop: menu bar, dock, draggable windows, and a set of working a
 | **System Settings** | Wallpapers and five Terminal themes, both persisted |
 | **About This Mac** | From the  menu |
 
+## Icons
+
+The app and file icons in `public/icons` are the genuine macOS and Chrome
+assets, extracted from the `.icns` bundles on a Mac by
+`scripts/extract-icons.sh` (document icons come from `NSWorkspace` via
+`scripts/extract-doc-icons.swift`). They remain Apple's and Google's
+artwork — swap `AppIcons.tsx` back to drawn SVGs if that matters for your
+use case.
+
 ## Stack
 
 Next.js (App Router) · TypeScript · Tailwind v4 · Framer Motion · zustand. The window manager, terminal engine and command registry are all hand-rolled — no xterm.js, no window library.

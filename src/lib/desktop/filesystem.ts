@@ -20,7 +20,7 @@ export const KIND_LABEL: Record<NodeKind, string> = {
   text: "Plain Text",
   image: "PNG image",
   pdf: "PDF Document",
-  code: "TypeScript",
+  code: "JSON Document",
   app: "Application",
   archive: "ZIP archive",
   key: "Keynote",

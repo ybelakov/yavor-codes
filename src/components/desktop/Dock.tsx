@@ -43,7 +43,7 @@ export function Dock() {
           aria-label="Downloads"
         >
           <span className="dock-tooltip">Downloads</span>
-          <span className="dock-icon"><FolderIcon /></span>
+          <span className="dock-icon"><FolderIcon variant="downloads" /></span>
           <span className="dock-dot" aria-hidden="true" />
         </button>
         <button
@@ -53,7 +53,7 @@ export function Dock() {
           aria-label="Trash"
         >
           <span className="dock-tooltip">Trash</span>
-          <span className="dock-icon"><TrashIcon full /></span>
+          <span className="dock-icon"><TrashIcon /></span>
           <span className="dock-dot" aria-hidden="true" />
         </button>
       </div>
