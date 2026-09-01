@@ -5,9 +5,11 @@ import { useDesktop } from "@/lib/desktop/store";
 import { NodeIcon } from "./NodeIcon";
 import { DESKTOP_ITEMS, type FsNode } from "@/lib/desktop/filesystem";
 import { trackEvent } from "@/lib/analytics";
+import { fileMenuItems } from "@/lib/desktop/file-menu";
 
 export function DesktopIcons() {
   const openApp = useDesktop((s) => s.openApp);
+  const openContextMenu = useDesktop((s) => s.openContextMenu);
   const [selected, setSelected] = useState<string | null>(null);
 
   const activate = (node: FsNode) => {
@@ -30,6 +32,16 @@ export function DesktopIcons() {
           onClick={() => setSelected(node.name)}
           onDoubleClick={() => activate(node)}
           onKeyDown={(e) => e.key === "Enter" && activate(node)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setSelected(node.name);
+            openContextMenu({
+              x: e.clientX,
+              y: e.clientY,
+              items: fileMenuItems(node, "Desktop", () => activate(node)),
+            });
+          }}
         >
           <span className="desk-icon-img"><NodeIcon node={node} /></span>
           <span className="desk-icon-label">{node.name}</span>

@@ -7,6 +7,7 @@ import juma from "@/content/juma.json";
 import aief from "@/content/aief.json";
 import postsData from "@/content/posts.json";
 import { trackEvent } from "@/lib/analytics";
+import { TrafficLights, useWindowControls } from "@/components/desktop/Window";
 
 type SiteId = "juma" | "aief" | "linkedin" | "github";
 
@@ -156,9 +157,17 @@ export function ChromeApp({ site }: { site?: string }) {
     setCurrent(id);
   };
 
+  const controls = useWindowControls();
+
   return (
     <div className="chrome-app">
-      <div className="chrome-tabs">
+      <div
+        className="chrome-tabstrip"
+        onPointerDown={(e) => controls?.startDrag(e)}
+        onDoubleClick={() => controls?.zoom()}
+      >
+        <TrafficLights title="Google Chrome" />
+        <div className="chrome-tabs">
         {tabs.map((t) => (
           <button
             key={t}
@@ -187,6 +196,8 @@ export function ChromeApp({ site }: { site?: string }) {
             )}
           </button>
         ))}
+        </div>
+        <span className="chrome-newtab" aria-hidden="true">+</span>
       </div>
       <div className="chrome-toolbar">
         <span className="chrome-nav-btns">

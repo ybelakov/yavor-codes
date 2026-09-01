@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDesktop } from "@/lib/desktop/store";
 import { NodeIcon } from "@/components/desktop/NodeIcon";
 import { FS, KIND_LABEL, SIDEBAR_SECTIONS, type FsNode } from "@/lib/desktop/filesystem";
+import { fileMenuItems } from "@/lib/desktop/file-menu";
 
 type View = "icon" | "list";
 
@@ -14,6 +15,13 @@ export function FinderApp({ folder: initialFolder }: { folder?: string }) {
   const [view, setView] = useState<View>("list");
   const [query, setQuery] = useState("");
   const openApp = useDesktop((s) => s.openApp);
+  const openContextMenu = useDesktop((s) => s.openContextMenu);
+
+  const nodeContext = (e: React.MouseEvent, node: FsNode) => {
+    e.preventDefault();
+    setSelected(node.name);
+    openContextMenu({ x: e.clientX, y: e.clientY, items: fileMenuItems(node, folder, () => activate(node)) });
+  };
 
   const all = FS[folder] ?? [];
   const items = query
@@ -107,6 +115,7 @@ export function FinderApp({ folder: initialFolder }: { folder?: string }) {
                 onClick={() => setSelected(node.name)}
                 onDoubleClick={() => activate(node)}
                 onKeyDown={(e) => e.key === "Enter" && activate(node)}
+                onContextMenu={(e) => nodeContext(e, node)}
               >
                 <span className="finder-item-icon"><NodeIcon node={node} /></span>
                 <span className="finder-item-name">{node.name}</span>
@@ -131,6 +140,7 @@ export function FinderApp({ folder: initialFolder }: { folder?: string }) {
                   onClick={() => setSelected(node.name)}
                   onDoubleClick={() => activate(node)}
                   onKeyDown={(e) => e.key === "Enter" && activate(node)}
+                  onContextMenu={(e) => nodeContext(e, node)}
                 >
                   <span className="finder-row-name">
                     <span className="finder-row-icon"><NodeIcon node={node} /></span>

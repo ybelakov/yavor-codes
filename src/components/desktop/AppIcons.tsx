@@ -25,6 +25,7 @@ const APP_ICON: Record<AppId, string> = {
   mail: "mail",
   settings: "settings",
   about: "finder",
+  info: "file",
 };
 
 export function AppIcon({ appId }: { appId: AppId }) {

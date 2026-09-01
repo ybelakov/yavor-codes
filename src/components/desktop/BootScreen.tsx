@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export function BootScreen({ onDone }: { onDone: () => void }) {
+export function BootScreen({ onDone }: { onDone: (played: boolean) => void }) {
   const [progress, setProgress] = useState(0);
   const [hiding, setHiding] = useState(false);
 
@@ -14,7 +14,7 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
     } catch {}
 
     if (reduced || seen) {
-      onDone();
+      onDone(false);
       return;
     }
 
@@ -29,7 +29,7 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
         try {
           localStorage.setItem("yc:booted", "1");
         } catch {}
-        setTimeout(onDone, 420);
+        setTimeout(() => onDone(true), 420);
       }
     }, 40);
 
@@ -39,7 +39,7 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
       try {
         localStorage.setItem("yc:booted", "1");
       } catch {}
-      setTimeout(onDone, 200);
+      setTimeout(() => onDone(true), 200);
     };
     window.addEventListener("keydown", skip, { once: true });
     window.addEventListener("pointerdown", skip, { once: true });

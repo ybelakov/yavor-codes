@@ -6,7 +6,8 @@ export type AppId =
   | "photos"
   | "mail"
   | "settings"
-  | "about";
+  | "about"
+  | "info";
 
 export interface WindowState {
   id: string;
@@ -34,4 +35,10 @@ export interface AppMeta {
   minSize?: { w: number; h: number };
   /** windows that shouldn't be resized (About This Mac) */
   fixed?: boolean;
+  /** window draws its own chrome (Chrome's tab strip) */
+  frameless?: boolean;
+  /** dark titlebar (Terminal) */
+  dark?: boolean;
+  /** allow several windows of this app (Get Info) */
+  multi?: boolean;
 }

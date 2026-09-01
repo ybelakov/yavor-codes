@@ -2,13 +2,34 @@ import { create } from "zustand";
 import type { AppId, WindowState } from "./types";
 import { APPS } from "./apps-meta";
 
+export interface MenuSpecItem {
+  label: string;
+  shortcut?: string;
+  disabled?: boolean;
+  run?: () => void;
+}
+export type MenuSpecEntry = MenuSpecItem | "sep";
+
+export interface ContextMenuState {
+  x: number;
+  y: number;
+  items: MenuSpecEntry[];
+}
+
 const MENUBAR_H = 28;
+
+type Overlay = "login" | "sleep" | "off" | null;
 
 interface DesktopState {
   windows: WindowState[];
   topZ: number;
   bootDone: boolean;
   activeAppId: AppId | null;
+  overlay: Overlay;
+  contextMenu: ContextMenuState | null;
+  spotlightOpen: boolean;
+  toast: string | null;
+  launchingApp: AppId | null;
   openApp: (appId: AppId, payload?: Record<string, string>) => void;
   close: (id: string) => void;
   focus: (id: string) => void;
@@ -17,6 +38,13 @@ interface DesktopState {
   move: (id: string, x: number, y: number) => void;
   resize: (id: string, w: number, h: number) => void;
   setBootDone: () => void;
+  setActiveApp: (appId: AppId | null) => void;
+  setOverlay: (o: Overlay) => void;
+  openContextMenu: (menu: ContextMenuState) => void;
+  closeContextMenu: () => void;
+  setSpotlight: (open: boolean) => void;
+  showToast: (msg: string) => void;
+  clearLaunching: () => void;
 }
 
 function isSmall(): boolean {
@@ -42,10 +70,15 @@ export const useDesktop = create<DesktopState>((set, get) => ({
   topZ: 10,
   bootDone: false,
   activeAppId: null,
+  overlay: null,
+  contextMenu: null,
+  spotlightOpen: false,
+  toast: null,
+  launchingApp: null,
 
   openApp: (appId, payload) => {
     const meta = APPS[appId];
-    const existing = get().windows.find((w) => w.appId === appId);
+    const existing = meta.multi ? undefined : get().windows.find((w) => w.appId === appId);
     if (existing) {
       // re-focus (and un-minimize) instead of spawning a duplicate
       set((s) => ({
@@ -66,12 +99,14 @@ export const useDesktop = create<DesktopState>((set, get) => ({
     set((s) => ({
       topZ: s.topZ + 1,
       activeAppId: appId,
+      launchingApp: appId,
+      contextMenu: null,
       windows: [
         ...s.windows,
         {
           id: `${appId}-${Date.now()}`,
           appId,
-          title: meta.name,
+          title: payload?.title ?? meta.name,
           x,
           y,
           w,
@@ -124,4 +159,16 @@ export const useDesktop = create<DesktopState>((set, get) => ({
     set((s) => ({ windows: s.windows.map((win) => (win.id === id ? { ...win, w, h } : win)) })),
 
   setBootDone: () => set({ bootDone: true }),
+  setActiveApp: (appId) => set({ activeAppId: appId }),
+  setOverlay: (o) => set({ overlay: o, contextMenu: null, spotlightOpen: false }),
+  openContextMenu: (menu) => set({ contextMenu: menu }),
+  closeContextMenu: () => set({ contextMenu: null }),
+  setSpotlight: (open) => set({ spotlightOpen: open, contextMenu: null }),
+  showToast: (msg) => {
+    set({ toast: msg });
+    setTimeout(() => {
+      if (useDesktop.getState().toast === msg) set({ toast: null });
+    }, 4200);
+  },
+  clearLaunching: () => set({ launchingApp: null }),
 }));
