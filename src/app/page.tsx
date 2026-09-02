@@ -1,4 +1,4 @@
-import { Desktop } from "@/components/desktop/Desktop";
+import { Shell } from "@/components/Shell";
 
 export default function Home() {
   return (
@@ -6,7 +6,7 @@ export default function Home() {
       <h1 className="sr-only">
         Yavor Belakov — Head of AI at Juma, founder of AIE.F Europe. Sofia and San Francisco.
       </h1>
-      <Desktop />
+      <Shell />
       <noscript>
         <p style={{ padding: "1rem", color: "#fff" }}>
           This desktop needs JavaScript — meanwhile:{" "}

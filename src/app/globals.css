@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/desktop.css";
+@import "../styles/phone.css";
 
 @theme inline {
   --color-bg: var(--t-bg);
