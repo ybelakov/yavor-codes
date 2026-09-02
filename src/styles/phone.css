@@ -89,10 +89,16 @@
   font-size: 11.5px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,.55);
   max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.ios-hint {
-  margin-top: auto; text-align: center; font-size: 12px; opacity: .75;
-  text-shadow: 0 1px 3px rgba(0,0,0,.5); padding-bottom: 10px;
+.ios-home-foot { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-bottom: 14px; }
+.ios-page-dots { display: flex; gap: 7px; }
+.ios-page-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.4); display: block; }
+.ios-page-dots .ios-dot-on { background: #fff; }
+.ios-search-pill {
+  display: flex; align-items: center; gap: 5px; padding: 6px 14px; border: none;
+  border-radius: 999px; font: inherit; font-size: 13.5px; color: #fff; cursor: default;
+  background: rgba(255,255,255,.22); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
+.ios-search-pill .ios-glyph-svg { width: 14px; height: 14px; }
 
 .ios-dock {
   flex-shrink: 0; display: flex; justify-content: space-around; align-items: center;
@@ -121,10 +127,6 @@
 }
 .ios-app-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .ios-app-body > * { flex: 1; min-height: 0; }
-.ios-app-foot {
-  flex-shrink: 0; height: 30px; display: grid; place-items: center;
-  padding-bottom: env(safe-area-inset-bottom, 0px); background: transparent;
-}
 .ios-home-bar-btn { background: none; border: none; padding: 8px 40px; cursor: default; }
 .ios-home-bar {
   display: block; width: 136px; height: 5px; border-radius: 3px;
@@ -132,17 +134,17 @@
 }
 .ios-app-window .ios-home-bar { background: rgba(0,0,0,.3); }
 
-/* apps inside the phone: hide desktop-only chrome */
-.iphone .unified-sidebar-top,
-.iphone .traffic-lights,
-.iphone .notes-folders,
-.iphone .finder-pathbar { display: none; }
-.iphone .unified { flex-direction: row; }
-.iphone .finder-sidebar { width: 116px; }
-.iphone .settings-sidebar { width: 128px; }
-.iphone .terminal.terminal-app { border-radius: 0; }
-.iphone .chrome-tabstrip { padding-top: 10px; }
-.iphone .notes-list { width: 132px; }
+/* native iOS apps fill the window; the home bar floats over them */
+.ios-app-window { background: var(--ios-bg); }
+.ios-app-dark { background: #000; }
+.ios-app-body > * { height: 100%; }
+.ios-app-window .ios-home-bar-btn {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: calc(2px + env(safe-area-inset-bottom, 0px));
+  z-index: 30; background: none; border: none; padding: 7px 44px; cursor: default;
+}
+.ios-app-window .ios-home-bar { background: rgba(0,0,0,.32); }
+.ios-app-dark .ios-home-bar { background: rgba(255,255,255,.45); }
 
 /* ---------- lock screen ---------- */
 .ios-lock {
