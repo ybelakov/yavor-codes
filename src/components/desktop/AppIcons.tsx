@@ -26,6 +26,7 @@ const APP_ICON: Record<AppId, string> = {
   settings: "settings",
   about: "finder",
   info: "file",
+  forcequit: "settings",
 };
 
 export function AppIcon({ appId }: { appId: AppId }) {

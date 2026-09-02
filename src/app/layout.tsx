@@ -1,10 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ALL_THEMES_CSS } from "@/lib/themes";
 import { THEME_INIT_SCRIPT } from "@/lib/theme-script";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
+
+/* SF Pro can't be embedded (license). Mac visitors get the real thing via
+   -apple-system; everyone else gets Inter, its closest legal cousin. */
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-ui",
+});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -52,7 +60,7 @@ const personJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={jetbrainsMono.variable}>
+    <html lang="en" suppressHydrationWarning className={`${jetbrainsMono.variable} ${inter.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <style dangerouslySetInnerHTML={{ __html: ALL_THEMES_CSS }} />

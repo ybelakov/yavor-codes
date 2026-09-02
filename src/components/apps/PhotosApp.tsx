@@ -3,16 +3,22 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import aief from "@/content/aief.json";
+import { TrafficLights, useWindowControls } from "@/components/desktop/Window";
 
 export function PhotosApp() {
   const [open, setOpen] = useState<number | null>(null);
   const photos = aief.photos;
 
+  const controls = useWindowControls();
+
   return (
-    <div className="photos">
-      <div className="photos-header">
-        <h2>AIE.F Europe</h2>
-        <p>{photos.length} photos · Sofia</p>
+    <div className="photos unified">
+      <div className="photos-header" onPointerDown={(e) => controls?.startDrag(e)}>
+        <TrafficLights />
+        <div>
+          <h2>AIE.F Europe</h2>
+          <p>{photos.length} photos · Sofia</p>
+        </div>
       </div>
       <div className="photos-grid">
         {photos.map((p, i) => (

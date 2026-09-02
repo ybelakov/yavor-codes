@@ -1,6 +1,9 @@
 import { useDesktop, type MenuSpecEntry } from "./store";
 import type { AppId } from "./types";
 import { runCommand } from "@/lib/terminal/run";
+import { useFinderPrefs } from "./finder-prefs";
+
+const finderPrefs = () => useFinderPrefs.getState();
 
 const d = () => useDesktop.getState();
 
@@ -12,6 +15,8 @@ function activeWindow() {
 const item = (label: string, shortcut?: string, run?: () => void): MenuSpecEntry =>
   run ? { label, shortcut, run } : { label, shortcut, disabled: true };
 
+const check = (label: string, checked: boolean, run: () => void): MenuSpecEntry => ({ label, checked, run });
+
 const EDIT: MenuSpecEntry[] = [
   item("Undo", "⌘Z"),
   item("Redo", "⇧⌘Z"),
@@ -22,22 +27,58 @@ const EDIT: MenuSpecEntry[] = [
   item("Select All", "⌘A"),
 ];
 
-const VIEW: MenuSpecEntry[] = [
-  item("Show Tab Bar", "⇧⌘T"),
-  item("Show All Tabs", "⇧⌘\\"),
-  "sep",
-  item("Enter Full Screen", "🌐F"),
-];
+function viewMenu(appId: AppId | null): MenuSpecEntry[] {
+  const s = d();
+  const win = activeWindow();
+  const fs = () => {
+    if (win) {
+      s.setFullscreen(win.id);
+      void document.documentElement.requestFullscreen?.().catch(() => {});
+    }
+  };
+  if (appId === "finder") {
+    const prefs = finderPrefs();
+    return [
+      check("as Icons", prefs.view === "icon", () => prefs.setView("icon")),
+      check("as List", prefs.view === "list", () => prefs.setView("list")),
+      check("as Columns", prefs.view === "columns", () => prefs.setView("columns")),
+      "sep",
+      {
+        label: "Sort By",
+        submenu: [
+          check("Name", prefs.sortBy === "name", () => prefs.setSort("name")),
+          check("Date Modified", prefs.sortBy === "modified", () => prefs.setSort("modified")),
+          check("Kind", prefs.sortBy === "kind", () => prefs.setSort("kind")),
+        ],
+      },
+      "sep",
+      item("Show Path Bar"),
+      item("Enter Full Screen", "🌐F", win ? fs : undefined),
+    ];
+  }
+  return [
+    item("Show Tab Bar", "⇧⌘T"),
+    item("Show All Tabs", "⇧⌘\\"),
+    "sep",
+    item("Enter Full Screen", "🌐F", win ? fs : undefined),
+  ];
+}
 
 function windowMenu(): MenuSpecEntry[] {
   const win = activeWindow();
   const s = d();
+  const all = s.windows;
   return [
     item("Minimize", "⌘M", win ? () => s.minimize(win.id) : undefined),
     item("Zoom", undefined, win ? () => s.toggleMaximize(win.id) : undefined),
     "sep",
-    item("Bring All to Front"),
-    ...(win ? ["sep" as const, { label: `✓ ${win.title}`, run: () => s.focus(win.id) }] : []),
+    item("Bring All to Front", undefined, all.length ? () => all.forEach((w) => s.focus(w.id)) : undefined),
+    ...(all.length
+      ? ([
+          "sep",
+          ...all.map((w) => check(w.title, w.id === win?.id, () => s.focus(w.id))),
+        ] as MenuSpecEntry[])
+      : []),
   ];
 }
 
@@ -63,10 +104,13 @@ function fileMenu(appId: AppId | null): MenuSpecEntry[] {
   ];
 }
 
-const goMenu = (): MenuSpecEntry[] =>
-  (["Desktop", "Documents", "Downloads", "Projects", "Applications"] as const).map((f) =>
+const goMenu = (): MenuSpecEntry[] => [
+  ...(["Desktop", "Documents", "Downloads", "Projects", "Photos", "Applications"] as const).map((f) =>
     item(f, undefined, () => d().openApp("finder", { folder: f })),
-  );
+  ),
+  "sep",
+  item("Trash", "⇧⌘⌫", () => d().openApp("finder", { folder: "Trash" })),
+];
 
 export function menuTitlesFor(appId: AppId | null): string[] {
   switch (appId) {
@@ -91,7 +135,7 @@ export function menuEntriesFor(appId: AppId | null, title: string): MenuSpecEntr
         item("Close Window", "⌘W", activeWindow() ? () => s.close(activeWindow()!.id) : undefined),
       ];
     case "Edit": return EDIT;
-    case "View": return VIEW;
+    case "View": return viewMenu(appId);
     case "Go": return goMenu();
     case "History":
       return [
@@ -125,25 +169,24 @@ export function menuEntriesFor(appId: AppId | null, title: string): MenuSpecEntr
 
 export function appleMenu(): MenuSpecEntry[] {
   const s = d();
-  const win = activeWindow();
   return [
     item("About This Mac", undefined, () => s.openApp("about")),
     "sep",
     item("System Settings…", undefined, () => s.openApp("settings")),
     item("App Store…"),
     "sep",
-    item("Recent Items"),
+    {
+      label: "Recent Items",
+      submenu: [
+        item("read-me-first.txt", undefined, () => s.openApp("notes", { note: "about" })),
+        item("juma-launch-deck.key", undefined, () => s.openApp("chrome", { site: "juma" })),
+        item("san-francisco.md", undefined, () => s.openApp("notes", { note: "sf" })),
+        "sep",
+        item("Clear Menu"),
+      ],
+    },
     "sep",
-    item(
-      "Force Quit…",
-      "⌥⌘⎋",
-      win
-        ? () => {
-            s.close(win.id);
-            s.showToast(`${win.title} was force quit. It didn't have unsaved changes. Probably.`);
-          }
-        : undefined,
-    ),
+    item("Force Quit…", "⌥⌘⎋", () => s.openApp("forcequit")),
     "sep",
     item("Sleep", undefined, () => s.setOverlay("sleep")),
     item("Restart…", undefined, () => {

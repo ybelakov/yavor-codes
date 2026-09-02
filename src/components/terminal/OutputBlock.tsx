@@ -67,7 +67,7 @@ export function OutputBlock({ entry }: { entry: HistoryEntry }) {
       {entry.input !== null && !isBoot && (
         <p className="echo-line">
           <span className="prompt-glyph" aria-hidden="true">
-            ❯
+            <span className="zsh-user">yavor@MacBook-Pro</span> <span className="zsh-path">~</span> %
           </span>{" "}
           {entry.input}
         </p>

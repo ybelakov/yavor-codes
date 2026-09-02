@@ -7,7 +7,8 @@ export type AppId =
   | "mail"
   | "settings"
   | "about"
-  | "info";
+  | "info"
+  | "forcequit";
 
 export interface WindowState {
   id: string;

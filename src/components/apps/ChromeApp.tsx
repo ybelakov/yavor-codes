@@ -166,7 +166,7 @@ export function ChromeApp({ site }: { site?: string }) {
         onPointerDown={(e) => controls?.startDrag(e)}
         onDoubleClick={() => controls?.zoom()}
       >
-        <TrafficLights title="Google Chrome" />
+        <TrafficLights />
         <div className="chrome-tabs">
         {tabs.map((t) => (
           <button
@@ -206,8 +206,12 @@ export function ChromeApp({ site }: { site?: string }) {
           <span className="chrome-nav-btn">⟳</span>
         </span>
         <span className="chrome-omnibox">
-          <span className="chrome-lock">🔒</span> {SITES[current].url}
+          <span className="chrome-lock">🔒</span>
+          <span className="chrome-url">{SITES[current].url}</span>
+          <span className="chrome-star" aria-hidden="true">☆</span>
         </span>
+        <img className="chrome-profile" src={profile.avatar} alt="Profile" />
+        <span className="chrome-kebab" aria-hidden="true">⋮</span>
       </div>
       <div className="chrome-bookmarks">
         {(Object.keys(SITES) as SiteId[]).map((id) => (

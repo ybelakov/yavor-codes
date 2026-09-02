@@ -6,6 +6,8 @@ export interface MenuSpecItem {
   label: string;
   shortcut?: string;
   disabled?: boolean;
+  checked?: boolean;
+  submenu?: MenuSpecEntry[];
   run?: () => void;
 }
 export type MenuSpecEntry = MenuSpecItem | "sep";
@@ -30,6 +32,12 @@ interface DesktopState {
   spotlightOpen: boolean;
   toast: string | null;
   launchingApp: AppId | null;
+  fullscreenId: string | null;
+  ncOpen: boolean;
+  focusMode: boolean;
+  magnifyEnabled: boolean;
+  trashEmpty: boolean;
+  quickLook: { name: string; kind: string; size?: string; modified: string } | null;
   openApp: (appId: AppId, payload?: Record<string, string>) => void;
   close: (id: string) => void;
   focus: (id: string) => void;
@@ -45,6 +53,13 @@ interface DesktopState {
   setSpotlight: (open: boolean) => void;
   showToast: (msg: string) => void;
   clearLaunching: () => void;
+  setBounds: (id: string, b: { x: number; y: number; w: number; h: number }) => void;
+  setFullscreen: (id: string | null) => void;
+  setNcOpen: (open: boolean) => void;
+  setFocusMode: (on: boolean) => void;
+  setMagnifyEnabled: (on: boolean) => void;
+  setTrashEmpty: (empty: boolean) => void;
+  setQuickLook: (ql: DesktopState["quickLook"]) => void;
 }
 
 function isSmall(): boolean {
@@ -75,6 +90,12 @@ export const useDesktop = create<DesktopState>((set, get) => ({
   spotlightOpen: false,
   toast: null,
   launchingApp: null,
+  fullscreenId: null,
+  ncOpen: false,
+  focusMode: false,
+  magnifyEnabled: true,
+  trashEmpty: false,
+  quickLook: null,
 
   openApp: (appId, payload) => {
     const meta = APPS[appId];
@@ -124,7 +145,11 @@ export const useDesktop = create<DesktopState>((set, get) => ({
     set((s) => {
       const windows = s.windows.filter((w) => w.id !== id);
       const top = [...windows].filter((w) => !w.minimized).sort((a, b) => b.z - a.z)[0];
-      return { windows, activeAppId: top?.appId ?? null };
+      return {
+        windows,
+        activeAppId: top?.appId ?? null,
+        fullscreenId: s.fullscreenId === id ? null : s.fullscreenId,
+      };
     }),
 
   focus: (id) =>
@@ -171,4 +196,14 @@ export const useDesktop = create<DesktopState>((set, get) => ({
     }, 4200);
   },
   clearLaunching: () => set({ launchingApp: null }),
+  setBounds: (id, b) =>
+    set((s) => ({
+      windows: s.windows.map((w) => (w.id === id ? { ...w, ...b, maximized: false } : w)),
+    })),
+  setFullscreen: (id) => set({ fullscreenId: id }),
+  setNcOpen: (open) => set({ ncOpen: open, contextMenu: null }),
+  setFocusMode: (on) => set({ focusMode: on }),
+  setMagnifyEnabled: (on) => set({ magnifyEnabled: on }),
+  setTrashEmpty: (empty) => set({ trashEmpty: empty }),
+  setQuickLook: (ql) => set({ quickLook: ql }),
 }));

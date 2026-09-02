@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useDesktop, type MenuSpecEntry } from "@/lib/desktop/store";
+import { useDesktop } from "@/lib/desktop/store";
 import { APPS } from "@/lib/desktop/apps-meta";
 import { appleMenu, menuEntriesFor, menuTitlesFor } from "@/lib/desktop/menus";
+import { MenuList } from "./MenuList";
+import { sounds } from "@/lib/desktop/sounds";
 
 function AppleLogo() {
   return (
@@ -45,38 +47,15 @@ function useClock(): string {
   return `${day.replace(",", "")} ${time}`;
 }
 
-function Dropdown({ entries, left, onClose }: { entries: MenuSpecEntry[]; left: number; onClose: () => void }) {
-  return (
-    <div className="menu-dropdown" style={{ left }} role="menu">
-      {entries.map((e, i) =>
-        e === "sep" ? (
-          <hr key={i} />
-        ) : (
-          <button
-            key={i}
-            type="button"
-            role="menuitem"
-            className={e.disabled || !e.run ? "menu-disabled" : ""}
-            disabled={e.disabled || !e.run}
-            onClick={() => {
-              e.run?.();
-              onClose();
-            }}
-          >
-            <span>{e.label}</span>
-            {e.shortcut && <kbd className="menu-shortcut">{e.shortcut}</kbd>}
-          </button>
-        ),
-      )}
-    </div>
-  );
-}
-
 type StatusPop = "battery" | "wifi" | "cc" | null;
 
 export function MenuBar() {
   const activeAppId = useDesktop((s) => s.activeAppId);
   const setSpotlight = useDesktop((s) => s.setSpotlight);
+  const setNcOpen = useDesktop((s) => s.setNcOpen);
+  const ncOpen = useDesktop((s) => s.ncOpen);
+  const focusMode = useDesktop((s) => s.focusMode);
+  const setFocusMode = useDesktop((s) => s.setFocusMode);
   const [menuOpen, setMenuOpenState] = useState<string | null>(null);
   const [menuLeft, setMenuLeft] = useState(4);
   const setMenuOpen = (title: string | null, el?: HTMLElement) => {
@@ -86,11 +65,23 @@ export function MenuBar() {
   const [statusPop, setStatusPop] = useState<StatusPop>(null);
   const clock = useClock();
   const barRef = useRef<HTMLDivElement>(null);
+  const menuOpenRef = useRef<string | null>(null);
+  const statusPopRef = useRef<StatusPop>(null);
+
+  useEffect(() => {
+    menuOpenRef.current = menuOpen;
+    statusPopRef.current = statusPop;
+  }, [menuOpen, statusPop]);
 
   useEffect(() => {
     const onDown = (e: MouseEvent) => {
       if (!barRef.current?.contains(e.target as Node)) {
-        setMenuOpen(null);
+        /* macOS swallows the click that dismisses an open menu */
+        if (menuOpenRef.current !== null || statusPopRef.current !== null) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        setMenuOpenState(null);
         setStatusPop(null);
       }
     };
@@ -100,10 +91,10 @@ export function MenuBar() {
         setStatusPop(null);
       }
     };
-    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mousedown", onDown, true);
     window.addEventListener("keydown", onKey);
     return () => {
-      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mousedown", onDown, true);
       window.removeEventListener("keydown", onKey);
     };
   }, []);
@@ -114,8 +105,10 @@ export function MenuBar() {
 
   /* real macOS: once one menu is open, hovering another title switches to it */
   const titleProps = (title: string) => ({
-    onClick: (e: React.MouseEvent<HTMLButtonElement>) =>
-      setMenuOpen(menuOpen === title ? null : title, e.currentTarget),
+    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setMenuOpen(menuOpen === title ? null : title, e.currentTarget);
+    },
     onMouseEnter: (e: React.MouseEvent<HTMLButtonElement>) =>
       anyOpen && setMenuOpen(title, e.currentTarget),
   });
@@ -149,9 +142,9 @@ export function MenuBar() {
           </button>
         ))}
 
-        {menuOpen === "apple" && <Dropdown entries={appleMenu()} left={menuLeft} onClose={() => setMenuOpen(null)} />}
+        {menuOpen === "apple" && <MenuList entries={appleMenu()} style={{ left: menuLeft }} onClose={() => setMenuOpen(null)} />}
         {menuOpen === "app" && (
-          <Dropdown
+          <MenuList
             entries={[
               { label: `About ${activeName}`, run: () => useDesktop.getState().openApp("about") },
               "sep",
@@ -167,12 +160,12 @@ export function MenuBar() {
                 },
               },
             ]}
-            left={menuLeft}
+            style={{ left: menuLeft }}
             onClose={() => setMenuOpen(null)}
           />
         )}
         {menuOpen && menuOpen !== "apple" && menuOpen !== "app" && (
-          <Dropdown entries={menuEntriesFor(activeAppId, menuOpen)} left={menuLeft} onClose={() => setMenuOpen(null)} />
+          <MenuList entries={menuEntriesFor(activeAppId, menuOpen)} style={{ left: menuLeft }} onClose={() => setMenuOpen(null)} />
         )}
       </div>
 
@@ -185,7 +178,7 @@ export function MenuBar() {
         >
           <svg viewBox="0 0 26 13" className="menubar-glyph">
             <rect x="0.6" y="0.6" width="21" height="11" rx="3" fill="none" stroke="currentColor" strokeOpacity="0.5" />
-            <rect x="2.2" y="2.2" width="17" height="7.8" rx="1.6" fill="currentColor" />
+            <rect x="2.2" y="2.2" width="14" height="7.8" rx="1.6" fill="currentColor" />
             <path d="M23 4.5v4a2.4 2.4 0 0 0 0-4z" fill="currentColor" fillOpacity="0.5" />
           </svg>
         </button>
@@ -219,12 +212,19 @@ export function MenuBar() {
             <circle cx="5" cy="9.2" r="1.15" fill="currentColor" />
           </svg>
         </button>
-        <span className="menubar-clock">{clock}</span>
+        <button
+          type="button"
+          className="menubar-status menubar-clock"
+          onClick={() => { setStatusPop(null); setNcOpen(!ncOpen); }}
+          aria-label="Notification Center"
+        >
+          {clock}
+        </button>
 
         {statusPop === "battery" && (
           <div className="status-pop">
             <p className="status-pop-title">Battery</p>
-            <p className="status-pop-row"><span>100%</span><span className="status-dim">Power Adapter</span></p>
+            <p className="status-pop-row"><span>82%</span><span className="status-dim">Power Adapter</span></p>
             <hr />
             <p className="status-dim status-pop-note">Using significant energy: Cursor</p>
           </div>
@@ -246,7 +246,13 @@ export function MenuBar() {
               <div className="cc-tile cc-on">Wi-Fi<br /><small>Work&Share 5G</small></div>
               <div className="cc-tile cc-on">Bluetooth<br /><small>On</small></div>
               <div className="cc-tile">AirDrop<br /><small>Contacts Only</small></div>
-              <div className="cc-tile">Focus<br /><small>Shipping</small></div>
+              <button
+              type="button"
+              className={`cc-tile ${focusMode ? "cc-on" : ""}`}
+              onClick={() => { setFocusMode(!focusMode); sounds.ding(); }}
+            >
+              Focus<br /><small>{focusMode ? "On — Shipping" : "Off"}</small>
+            </button>
             </div>
             <label className="cc-slider">
               <span>Display</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TrafficLights, useWindowControls } from "@/components/desktop/Window";
 import profile from "@/content/profile.json";
 import sf from "@/content/sf.json";
 import juma from "@/content/juma.json";
@@ -60,9 +61,23 @@ export function NotesApp({ note }: { note?: string }) {
   const [current, setCurrent] = useState<NoteId>(initial);
   const active = NOTES[current];
 
+  const controls = useWindowControls();
+
   return (
-    <div className="notes">
+    <div className="notes unified">
+      <aside className="notes-folders unified-sidebar">
+        <div className="unified-sidebar-top" onPointerDown={(e) => controls?.startDrag(e)}>
+          <TrafficLights />
+        </div>
+        <p className="finder-side-label">iCloud</p>
+        <button type="button" className="finder-side-item finder-side-active">📁 Notes</button>
+        <button type="button" className="finder-side-item">📁 Drafts</button>
+      </aside>
       <aside className="notes-list">
+        <div className="notes-list-toolbar" onPointerDown={(e) => controls?.startDrag(e)}>
+          <span className="notes-tool" aria-hidden="true">☰</span>
+          <span className="notes-tool" aria-hidden="true">✎</span>
+        </div>
         {(Object.keys(NOTES) as NoteId[]).map((id) => (
           <button
             key={id}
@@ -77,6 +92,12 @@ export function NotesApp({ note }: { note?: string }) {
         ))}
       </aside>
       <article className="notes-body">
+        <div className="notes-toolbar" onPointerDown={(e) => controls?.startDrag(e)}>
+          <span className="notes-tool" aria-hidden="true">Aa</span>
+          <span className="notes-tool" aria-hidden="true">☑</span>
+          <span className="notes-tool" aria-hidden="true">⌗</span>
+          <span className="notes-tool notes-tool-right" aria-hidden="true">⇪</span>
+        </div>
         <p className="notes-date">{active.date}</p>
         <pre className="notes-text">{active.body}</pre>
       </article>

@@ -58,7 +58,7 @@ export function PromptLine() {
         Command input. Type a command, or use the suggested command buttons. Try &quot;help&quot;.
       </label>
       <span className="prompt-glyph" aria-hidden="true">
-        ❯
+        <span className="zsh-user">yavor@MacBook-Pro</span> <span className="zsh-path">~</span> %
       </span>
       <div className="prompt-input-wrap">
         <input

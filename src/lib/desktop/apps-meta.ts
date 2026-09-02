@@ -1,7 +1,14 @@
 import type { AppId, AppMeta } from "./types";
 
 export const APPS: Record<AppId, AppMeta> = {
-  finder: { id: "finder", name: "Finder", inDock: true, defaultSize: { w: 780, h: 500 } },
+  finder: {
+    id: "finder",
+    name: "Finder",
+    inDock: true,
+    frameless: true,
+    defaultSize: { w: 820, h: 520 },
+    minSize: { w: 620, h: 360 },
+  },
   terminal: {
     id: "terminal",
     name: "Terminal",
@@ -19,17 +26,32 @@ export const APPS: Record<AppId, AppMeta> = {
     defaultSize: { w: 900, h: 600 },
     minSize: { w: 480, h: 360 },
   },
-  notes: { id: "notes", name: "Notes", inDock: true, defaultSize: { w: 720, h: 480 } },
+  notes: {
+    id: "notes",
+    name: "Notes",
+    inDock: true,
+    frameless: true,
+    defaultSize: { w: 780, h: 480 },
+    minSize: { w: 560, h: 340 },
+  },
   photos: {
     id: "photos",
+    frameless: true,
     name: "Photos",
     inDock: true,
     onDesktop: true,
     defaultSize: { w: 800, h: 540 },
   },
-  mail: { id: "mail", name: "Mail", inDock: true, defaultSize: { w: 680, h: 460 } },
+  mail: {
+    id: "mail",
+    name: "Mail",
+    inDock: true,
+    frameless: true,
+    defaultSize: { w: 680, h: 460 },
+  },
   settings: {
     id: "settings",
+    frameless: true,
     name: "System Settings",
     inDock: true,
     defaultSize: { w: 640, h: 460 },
@@ -40,6 +62,13 @@ export const APPS: Record<AppId, AppMeta> = {
     inDock: false,
     defaultSize: { w: 480, h: 400 },
     fixed: true,
+  },
+  forcequit: {
+    id: "forcequit",
+    name: "Force Quit Applications",
+    inDock: false,
+    fixed: true,
+    defaultSize: { w: 340, h: 320 },
   },
   info: {
     id: "info",

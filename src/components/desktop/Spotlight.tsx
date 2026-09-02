@@ -14,6 +14,7 @@ interface Hit {
   title: string;
   sub: string;
   icon: string;
+  section: string;
   run: () => void;
 }
 
@@ -27,6 +28,7 @@ function buildIndex(): Hit[] {
       title: APPS[id].name,
       sub: "Application",
       icon: id === "finder" ? "finder" : id,
+      section: "Applications",
       run: () => s().openApp(id),
     });
   }
@@ -38,6 +40,7 @@ function buildIndex(): Hit[] {
         title: n.name,
         sub: folder,
         icon: n.kind === "folder" ? "folder" : `file-${n.kind === "text" || n.kind === "code" ? "text" : n.kind === "image" ? "image" : n.kind === "pdf" ? "pdf" : n.kind === "key" ? "key" : n.kind === "archive" ? "zip" : "text"}`,
+        section: n.kind === "folder" ? "Folders" : "Documents",
         run: () => {
           if (n.open) s().openApp(n.open.app, n.open.payload);
           else s().openApp("finder", { folder });
@@ -51,6 +54,7 @@ function buildIndex(): Hit[] {
       title: cmd.name,
       sub: `Terminal — ${cmd.description}`,
       icon: "terminal",
+      section: "Terminal Commands",
       run: () => {
         s().openApp("terminal");
         runCommand(cmd.name, "chip");
@@ -76,7 +80,20 @@ function SpotlightPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const q = query.trim().toLowerCase();
+  const raw = query.trim();
+  const q = raw.toLowerCase();
+
+  /* macOS Spotlight does arithmetic inline */
+  let calc: string | null = null;
+  if (/^[\d\s+\-*/().%^]+$/.test(raw) && /[+\-*/]/.test(raw) && raw.length < 40) {
+    try {
+      const val = Function(`"use strict";return (${raw.replace(/\^/g, "**")})`)();
+      if (typeof val === "number" && Number.isFinite(val)) {
+        calc = Number.isInteger(val) ? String(val) : String(Number(val.toFixed(6)));
+      }
+    } catch {}
+  }
+
   const results = q
     ? index
         .map((h) => {
@@ -86,9 +103,28 @@ function SpotlightPanel() {
         })
         .filter((r) => r.score >= 0)
         .sort((a, b) => a.score - b.score)
-        .slice(0, 8)
+        .slice(0, 7)
         .map((r) => r.h)
     : [];
+
+  if (q && results.length < 7) {
+    results.push({
+      id: "web",
+      title: `Search the Web for “${raw}”`,
+      sub: "Google",
+      icon: "chrome",
+      section: "Suggested",
+      run: () => window.open(`https://www.google.com/search?q=${encodeURIComponent(raw)}`, "_blank", "noopener"),
+    });
+  }
+
+  const grouped: { section: string; hits: Hit[] }[] = [];
+  for (const h of results) {
+    const g = grouped.find((x) => x.section === h.section);
+    if (g) g.hits.push(h);
+    else grouped.push({ section: h.section, hits: [h] });
+  }
+  let flatIndex = -1;
 
   const pick = (hit: Hit) => {
     hit.run();
@@ -119,27 +155,44 @@ function SpotlightPanel() {
             aria-label="Spotlight Search"
           />
         </div>
-        {results.length > 0 && (
-          <ul className="spotlight-results">
-            {results.map((h, i) => (
-              <li key={h.id}>
-                <button
-                  type="button"
-                  className={i === cursor ? "spotlight-hit spotlight-active" : "spotlight-hit"}
-                  onMouseEnter={() => setCursor(i)}
-                  onClick={() => pick(h)}
-                >
-                  <span className="spotlight-icon"><Icon name={h.icon} /></span>
-                  <span className="spotlight-text">
-                    <strong>{h.title}</strong>
-                    <small>{h.sub}</small>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        {calc && (
+          <div className="spotlight-calc">
+            <span className="spotlight-calc-q">{raw}</span>
+            <span className="spotlight-calc-a">{calc}</span>
+          </div>
         )}
-        {q && results.length === 0 && <p className="spotlight-none">No results for “{query}”</p>}
+        {results.length > 0 && (
+          <div className="spotlight-results">
+            {grouped.map((g) => (
+              <div key={g.section}>
+                <p className="spotlight-section">{g.section}</p>
+                <ul>
+                  {g.hits.map((h) => {
+                    flatIndex += 1;
+                    const i = flatIndex;
+                    return (
+                      <li key={h.id}>
+                        <button
+                          type="button"
+                          className={i === cursor ? "spotlight-hit spotlight-active" : "spotlight-hit"}
+                          onMouseEnter={() => setCursor(i)}
+                          onClick={() => pick(h)}
+                        >
+                          <span className="spotlight-icon"><Icon name={h.icon} /></span>
+                          <span className="spotlight-text">
+                            <strong>{h.title}</strong>
+                            <small>{h.sub}</small>
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+        {q && results.length === 0 && !calc && <p className="spotlight-none">No results for “{query}”</p>}
       </div>
     </div>
   );

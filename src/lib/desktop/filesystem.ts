@@ -62,6 +62,13 @@ export const FS: Record<string, FsNode[]> = {
     { name: "aief-events", kind: "folder", size: "6 items", modified: "Feb 11, 2026", open: { app: "photos" } },
     { name: "san-francisco-2025", kind: "folder", size: "41 items", modified: "Dec 3, 2025", open: { app: "notes", payload: { note: "sf" } } },
   ],
+  Trash: [
+    { name: "rebrand-ideas-v1.txt", kind: "text", size: "4 KB", modified: "Oct 8, 2025", open: { app: "notes", payload: { note: "now" } } },
+    { name: "rebrand-ideas-v7-FINAL.txt", kind: "text", size: "9 KB", modified: "Nov 14, 2025", open: { app: "notes", payload: { note: "now" } } },
+    { name: "cold-dm-to-sama.txt", kind: "text", size: "1 KB", modified: "Nov 18, 2025", open: { app: "notes", payload: { note: "now" } } },
+    { name: "sleep-schedule.json", kind: "code", size: "0 KB", modified: "Apr 2023", open: { app: "terminal" } },
+    { name: "work-life-balance.md", kind: "text", size: "0 KB", modified: "Apr 2023", open: { app: "terminal" } },
+  ],
   Applications: [
     { name: "Terminal", kind: "app", appId: "terminal", modified: "Aug 31, 2026", open: { app: "terminal" } },
     { name: "Google Chrome", kind: "app", appId: "chrome", modified: "Aug 31, 2026", open: { app: "chrome" } },

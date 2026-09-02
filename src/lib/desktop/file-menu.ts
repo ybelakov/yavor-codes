@@ -35,16 +35,23 @@ export function fileMenuItems(node: FsNode, where: string, activate: () => void)
   ];
 }
 
-export function desktopMenuItems(): MenuSpecEntry[] {
+export function desktopMenuItems(newFolder?: () => string): MenuSpecEntry[] {
   const s = useDesktop.getState();
   return [
-    { label: "New Folder", disabled: true },
+    { label: "New Folder", shortcut: "⇧⌘N", run: newFolder ? () => { newFolder(); } : undefined },
     "sep",
     { label: "Get Info", disabled: true },
     { label: "Change Wallpaper…", run: () => s.openApp("settings") },
     "sep",
     { label: "Use Stacks", disabled: true },
-    { label: "Sort By", disabled: true },
+    {
+      label: "Sort By",
+      submenu: [
+        { label: "Name", checked: true, run: () => {} },
+        { label: "Kind", run: () => {} },
+        { label: "Date Modified", run: () => {} },
+      ],
+    },
     { label: "Show View Options", disabled: true },
   ];
 }

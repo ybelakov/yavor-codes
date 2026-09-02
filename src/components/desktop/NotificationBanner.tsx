@@ -3,24 +3,28 @@
 import { useEffect, useState } from "react";
 import { useDesktop } from "@/lib/desktop/store";
 import { Icon } from "./AppIcons";
+import { sounds } from "@/lib/desktop/sounds";
 
 export function NotificationBanner() {
   const bootDone = useDesktop((s) => s.bootDone);
   const overlay = useDesktop((s) => s.overlay);
+  const focusMode = useDesktop((s) => s.focusMode);
   const openApp = useDesktop((s) => s.openApp);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (!bootDone || overlay) return;
+    if (!bootDone || overlay || focusMode) return;
     let seen = false;
     try { seen = !!sessionStorage.getItem("yc:notif"); } catch {}
     if (seen) return;
     const inT = setTimeout(() => {
+      if (useDesktop.getState().focusMode) return;
       setShow(true);
+      sounds.ding();
       try { sessionStorage.setItem("yc:notif", "1"); } catch {}
     }, 9000);
     return () => clearTimeout(inT);
-  }, [bootDone, overlay]);
+  }, [bootDone, overlay, focusMode]);
 
   useEffect(() => {
     if (!show) return;
